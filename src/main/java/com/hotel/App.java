@@ -1,4 +1,5 @@
 package com.hotel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -398,7 +399,8 @@ public class App {
 
         if (reserves.containsKey(codiReserva)) {
             /*
-             * Creem altra vegada les variables i el arraylist de dadesreserva per poder accedir a les dades que ens
+             * Creem altra vegada les variables i el arraylist de dadesreserva per poder
+             * accedir a les dades que ens
              * interesen, ja que estaben en altres métodes on no podem accedir.
              * a traves de estas noves variables, agafem les dades el hashmap global
              */
@@ -432,6 +434,8 @@ public class App {
      */
     public static void llistarReservesPerTipus(int[] codis, String tipus) {
         // TODO: Implementar recursivitat
+        // Açi hi ha que llegir un tipus de habitacio y imprimir totes les reserves que
+        // hi han de eixe tipus
     }
 
     /**

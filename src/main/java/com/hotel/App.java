@@ -393,18 +393,20 @@ public class App {
         System.out.println("\n===== ALLIBERAR HABITACIÓ =====");
         // TODO: Demanar codi, tornar habitació i eliminar reserva
         int codiReserva;
-
+        boolean codiTrobat = false;
         System.out.println("Introdueix codi de reserva: ");
         codiReserva = sc.nextInt();
         sc.nextLine();
 
         if (reserves.containsKey(codiReserva)) {
+            codiTrobat = true;
             /*
              * Creem altra vegada les variables i el arraylist de dadesreserva per poder
              * accedir a les dades que ens
              * interesen, ja que estaben en altres métodes on no podem accedir.
              * a traves de estas noves variables, agafem les dades el hashmap global
              */
+
             ArrayList<String> dadesReserva = reserves.get(codiReserva); // EJEMPLO: dadesReserva = "Estandar", "Spa"
             String tipusHabitacio = dadesReserva.get(0); // tipusHabitacio= "Estandar"
             int disponible = disponibilitatHabitacions.get(tipusHabitacio); // disponible=X
@@ -412,8 +414,9 @@ public class App {
 
             reserves.remove(codiReserva);
             System.out.println("Reserva cancel·lada ");
+        }
 
-        } else {
+        else {
             System.out.println("No existeix la reserva");
         }
     }

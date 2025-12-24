@@ -146,6 +146,10 @@ public class App {
         // TODO:
 
         String tipoHabitacio = seleccionarTipusHabitacio();
+        if (tipoHabitacio == null) {
+            System.out.println("No hi han habitacions disponibles.");
+            return;
+        }
         ArrayList<String> serveisList = seleccionarServeis();
         float preuTotal = calcularPreuTotal(tipoHabitacio, serveisList);
         int codiReserva = generarCodiReserva();
@@ -203,12 +207,10 @@ public class App {
     public static String seleccionarTipusHabitacioDisponible() {
         System.out.println("\nTipus d'habitació disponibles:");
         // TODO:
-        int opcio = 0;
         /*
          * mostrem tota la informacio de cada tipus d'habitacio
          * les ocupades, lliures, i preu (ja està posat en mostrarInfoTipus)
          */
-
         mostrarInfoTipus(TIPUS_ESTANDARD);
         mostrarInfoTipus(TIPUS_DELUXE);
         mostrarInfoTipus(TIPUS_SUITE);
@@ -218,7 +220,7 @@ public class App {
          */
         System.out.println("Selecciona un tipus d'habitació disponible: ");
         System.out.println("1.ESTÀNDAR - 2.DELUXE - 3.SUITE: ");
-        opcio = llegirEnter("Selecciona un tipus disponible (1-3)");
+        int opcio = llegirEnter("Selecciona un tipus disponible (1-3)");
 
         /*
          * Switch case per a posar opcions i aixi comprobem si hi han disponibles (>0)
@@ -373,7 +375,6 @@ public class App {
         // TODO:
         int codiReserva;
         boolean codiRepetit;
-
         do {
             codiReserva = 100 + random.nextInt(900);
 
@@ -422,6 +423,11 @@ public class App {
      */
     public static void consultarDisponibilitat() {
         // TODO: Mostrar lliures i ocupades
+        System.out.println("Disponibilitat de habitacions: ");
+
+        System.out.println("TIPUS\t\tLLIURES\tOCUPADES");
+        System.out.println("------\t\t-------\t--------");
+
         mostrarDisponibilitatTipus(TIPUS_ESTANDARD);
         mostrarDisponibilitatTipus(TIPUS_DELUXE);
         mostrarDisponibilitatTipus(TIPUS_SUITE);

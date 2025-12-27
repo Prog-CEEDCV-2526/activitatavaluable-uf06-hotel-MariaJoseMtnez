@@ -2,6 +2,7 @@ package com.hotel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -124,7 +125,7 @@ public class App {
                 consultarDisponibilitat();
                 break;
             case 4:
-                llistarReservesPerTipus(null, TIPUS_DELUXE);
+                obtindreReservaPerTipus();
                 break;
             case 5:
                 obtindreReserva();
@@ -145,28 +146,29 @@ public class App {
         System.out.println("\n===== RESERVAR HABITACIÓ =====");
         // TODO:
 
-        String tipoHabitacio = seleccionarTipusHabitacio();
-        if (tipoHabitacio == null) {
-            System.out.println("No hi han habitacions disponibles.");
-            return;
-        }
+        String tipoHabitacio = seleccionarTipusHabitacio(); // creo variable tipohabitacio
         ArrayList<String> serveisList = seleccionarServeis();
         float preuTotal = calcularPreuTotal(tipoHabitacio, serveisList);
         int codiReserva = generarCodiReserva();
-
         /*
-         * creem un array per memoritzar les dades de la reserva (tipo habitacio y
-         * serveis)
+         * creem un array per memoritzar les dades de la reserva (tipo habitacio,
+         * serveis i preutotal)
          */
         ArrayList<String> dadesReserva = new ArrayList<>();
+        // Afegim: habitacio + serveis + preu
         dadesReserva.add(tipoHabitacio);
-        dadesReserva.addAll(serveisList); // AÇI AFEGIM TOTES LES DADES
-        /* añadim al hashmap el codi de reserva creat y les dades de reserva */
+        dadesReserva.addAll(serveisList); // afegim tots el serveis
+        String preuFormateat = String.format("%.2f", preuTotal);
+        dadesReserva.add(preuFormateat);
+
+        /* añadim al hashmap global: codi de reserva + dades de reserva */
         reserves.put(codiReserva, dadesReserva);
+        // restem una habitació a disponible quan es reserva
+        int disponible = disponibilitatHabitacions.get(tipoHabitacio);
+        disponibilitatHabitacions.put(tipoHabitacio, disponible - 1);
 
-        /* imprimim per visualitzar */
+        System.out.println("Reserva realitzada! ");
 
-        System.out.println(reserves);
     }
 
     /**
@@ -176,7 +178,6 @@ public class App {
     public static String seleccionarTipusHabitacio() {
         // TODO:
         int opcio = 0;
-        System.out.println("Habitacions disponibles: ");
         System.out.println("1. Estàndar 50 e ");
         System.out.println("2. Suite 100 e ");
         System.out.println("3. Deluxe 150 e ");
@@ -211,6 +212,7 @@ public class App {
          * mostrem tota la informacio de cada tipus d'habitacio
          * les ocupades, lliures, i preu (ja està posat en mostrarInfoTipus)
          */
+
         mostrarInfoTipus(TIPUS_ESTANDARD);
         mostrarInfoTipus(TIPUS_DELUXE);
         mostrarInfoTipus(TIPUS_SUITE);
@@ -223,7 +225,7 @@ public class App {
         int opcio = llegirEnter("Selecciona un tipus disponible (1-3)");
 
         /*
-         * Switch case per a posar opcions i aixi comprobem si hi han disponibles (>0)
+         * Switch per a posar opcions i aixi comprobem si hi han disponibles (>0)
          * Retorna si hi ha, sino retorna null
          */
         switch (opcio) {
@@ -232,7 +234,7 @@ public class App {
                     return TIPUS_ESTANDARD;
 
                 } else {
-                    System.out.println("No n'hi ha han habitacions disponibles.");
+                    System.out.println("No n'hi han habitacions disponibles.");
                     return null;
                 }
 
@@ -256,7 +258,6 @@ public class App {
 
             default:
                 return null;
-
         }
 
     }
@@ -362,8 +363,9 @@ public class App {
         for (String servei : serveisList) {
             preuTotal += preusServeis.get(servei);
         }
+        System.out.println("Preu total: " +  preuTotal + " euros");
         preuTotal = preuTotal * (1 + IVA);
-        System.out.println("Preu total (amb IVA): " + String.format("%.2f", preuTotal) + " euros");
+        System.out.println("Preu total (amb IVA): " +  preuTotal + " euros");
         return preuTotal;
     }
 
@@ -452,19 +454,23 @@ public class App {
      */
     public static void obtindreReserva() {
         System.out.println("\n===== CONSULTAR RESERVA =====");
+
         // TODO: Mostrar dades d'una reserva concreta
 
         System.out.println("Introdueix codi de la reserva: ");
         int codiReserva = sc.nextInt();
         sc.nextLine();
 
-        /*
-         * localitzem reserva amb la seua clau si el hashmap la conté
-         */
+        /*localitzem reserva amb la seua clau si el hashmap la conté.
+         * Si la té, accedim a la funció de mostrarDadesReserva.*/
+
         if (reserves.containsKey(codiReserva)) {
-            System.out.println(reserves.get(codiReserva));
+
+            mostrarDadesReserva(codiReserva);
+
         } else
-            System.out.println("No existeix la reserva");
+            System.out.println("No existeix la reserva amb aquest codi " + codiReserva);
+
     }
 
     /*
@@ -473,11 +479,31 @@ public class App {
     public static void obtindreReservaPerTipus() {
         System.out.println("\n===== CONSULTAR RESERVES PER TIPUS =====");
         // TODO: Llistar reserves per tipus
-        String tipoHabitacio = seleccionarTipusHabitacio();
+        int opcio=llegirEnter("Selecciona tipus de habitació: ");
+        opcio=sc.nextInt();
+        sc.nextLine();
+        
+        for (Map.Entry<Integer, ArrayList<String>> r : reserves.entrySet()){
+            int codiReserva=r.getKey();
+            ArrayList <String> dades= r.getValue();
+            System.out.println(codiReserva + "--" + dades );
+        }
 
-        // llistarReservesPerTipus(null, tipoHabitacio);
-        disponibilitatHabitacions.get(tipoHabitacio);
-        System.out.println();
+
+   
+        switch (opcio) {
+            case 1:
+                
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
+
+        
 
     }
 
@@ -486,10 +512,24 @@ public class App {
      */
     public static void mostrarDadesReserva(int codi) {
         // TODO: Imprimir tota la informació d'una reserva
-        System.out.println("Tipus d'habitació seleccionat: " + seleccionarTipusHabitacio());
-        System.out.println("Serveis seleccionats: " + seleccionarServeis());
-        System.out.println(
-                "El preu total amb IVA es: " + calcularPreuTotal(seleccionarTipusHabitacio(), seleccionarServeis()));
+        ArrayList<String> dadesReserva = reserves.get(codi);
+        String tipoHabitacio = dadesReserva.get(0);
+        System.out.println("==== RESERVA: " + codi + " ====");
+        System.out.println("Habitació: ");
+        System.out.println(tipoHabitacio);
+        System.out.println();
+        System.out.println("Serveis: ");
+        if (dadesReserva.size() <= 2) {
+            System.out.println("cap");
+        } else {
+            for (int i = 1; i < dadesReserva.size() - 1; i++) {
+                System.out.println(i + ". " + dadesReserva.get(i));
+            }
+            System.out.println();
+        }
+        String preu = dadesReserva.get(dadesReserva.size() - 1);
+        System.out.println("Preu total: ");
+        System.out.println(preu + " euros");
 
     }
 

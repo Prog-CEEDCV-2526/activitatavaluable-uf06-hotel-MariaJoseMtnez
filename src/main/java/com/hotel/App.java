@@ -1,6 +1,4 @@
 package com.hotel;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -228,8 +226,7 @@ public class App {
          * amb el llegir enter que ja est'a declarat validem la entrada.
          */
         System.out.println();
-        System.out.println("1.ESTÀNDAR - 2.DELUXE - 3.SUITE ");
-        int opcio = llegirEnter("(1-2-3): ");
+        int opcio = llegirEnter("1.ESTÀNDAR - 2.DELUXE - 3.SUITE: ");
         sc.nextLine();
 
         /*
@@ -376,9 +373,9 @@ public class App {
         for (String servei : serveisList) {
             preuTotal += preusServeis.get(servei);
         }
-        System.out.println("Preu total: " + preuTotal + " euros");
+        System.out.println("Preu total: " + String.format("%.2f", preuTotal) + " euros");
         preuTotal = preuTotal * (1 + IVA);
-        System.out.println("Preu total (amb IVA): " + preuTotal + " euros");
+        System.out.println("Preu total (amb IVA): " + String.format("%.2f", preuTotal) + " euros");
         return preuTotal;
     }
 

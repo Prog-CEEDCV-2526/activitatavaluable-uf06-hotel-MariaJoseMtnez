@@ -1,4 +1,5 @@
 package com.hotel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class App {
     // Capacitat inicial
     public static final int CAPACITAT_ESTANDARD = 30;
     public static final int CAPACITAT_SUITE = 20;
-    public static final int CAPACITAT_DELUXE = 10;
+    public static final int CAPACITAT_DELUXE = 1;
 
     // IVA
     public static final float IVA = 0.21f;
@@ -112,7 +113,6 @@ public class App {
      */
     public static void gestionarOpcio(int opcio) {
         // TODO:
-
         switch (opcio) {
             case 1:
                 reservarHabitacio();
@@ -134,7 +134,6 @@ public class App {
             default:
                 break;
         }
-
     }
 
     /**
@@ -170,8 +169,21 @@ public class App {
         // restem una habitació a disponible quan es reserva
         int disponible = disponibilitatHabitacions.get(tipoHabitacio);
         disponibilitatHabitacions.put(tipoHabitacio, disponible - 1);
+        float impostos = preuTotal * IVA;
 
-        System.out.println("Reserva realitzada! ");
+        System.out.println("Calculem el total... ");
+        System.out.println("\nPreu habitació " + tipoHabitacio + ": " + preusHabitacions.get(tipoHabitacio) + "euros");
+        System.out.println("\nServeis: ");
+        for (int i = 0; i < serveisList.size(); i++) {
+
+            System.out.println((i + 1) + ". " + serveisList.get(i));
+
+        }
+        System.out.println("\nIVA (21%) " + String.format("%.2f", impostos) + " euros");
+        System.out.println("\nPreu total (amb IVA): " + preuFormateat + " euros");
+
+        System.out.println("\nReserva realitzada!");
+        System.out.println("\nCodi de reserva: " + codiReserva);
 
     }
 
@@ -183,8 +195,8 @@ public class App {
         // TODO:
         int opcio = 0;
         System.out.println("1. Estàndar ");
-        System.out.println("2. Deluxe ");
-        System.out.println("3. Suite ");
+        System.out.println("2. Suite ");
+        System.out.println("3. Deluxe ");
         System.out.println("Seleccione tipus d'habitació: ");
 
         opcio = sc.nextInt();
@@ -194,9 +206,9 @@ public class App {
             case 1:
                 return TIPUS_ESTANDARD;
             case 2:
-                return TIPUS_DELUXE;
-            case 3:
                 return TIPUS_SUITE;
+            case 3:
+                return TIPUS_DELUXE;
             default:
                 System.out.println("Opció no vàlida. S'assignarà Estàndard per defecte.");
                 return TIPUS_ESTANDARD;
@@ -216,17 +228,18 @@ public class App {
          * mostrem tota la informacio de cada tipus d'habitacio
          * les ocupades, lliures, i preu (ja està posat en mostrarInfoTipus)
          */
-        System.out.println();
-
+        System.out.print("1. ");
         mostrarInfoTipus(TIPUS_ESTANDARD);
-        mostrarInfoTipus(TIPUS_DELUXE);
+        System.out.print("2. ");
         mostrarInfoTipus(TIPUS_SUITE);
+        System.out.print("3. ");
+        mostrarInfoTipus(TIPUS_DELUXE);
         /*
          * Li diguem al usuari que seleccione tipus habitacio.
          * amb el llegir enter que ja est'a declarat validem la entrada.
          */
         System.out.println();
-        int opcio = llegirEnter("1.ESTÀNDAR - 2.DELUXE - 3.SUITE: ");
+        int opcio = llegirEnter("Seleccione tipus d'habitació: ");
         sc.nextLine();
 
         /*
@@ -244,8 +257,8 @@ public class App {
                 }
 
             case 2:
-                if (disponibilitatHabitacions.get(TIPUS_DELUXE) > 0) {
-                    return TIPUS_DELUXE;
+                if (disponibilitatHabitacions.get(TIPUS_SUITE) > 0) {
+                    return TIPUS_SUITE;
 
                 } else {
                     System.out.println("No n'hi ha han habitacions disponibles.");
@@ -253,8 +266,8 @@ public class App {
                 }
 
             case 3:
-                if (disponibilitatHabitacions.get(TIPUS_SUITE) > 0) {
-                    return TIPUS_SUITE;
+                if (disponibilitatHabitacions.get(TIPUS_DELUXE) > 0) {
+                    return TIPUS_DELUXE;
 
                 } else {
                     System.out.println("No n'hi ha han habitacions disponibles.");
@@ -277,25 +290,31 @@ public class App {
         char resposta;
         boolean respostaValida = true;
         boolean serviciValid = true;
+        boolean eixir = false;
+
         ArrayList<String> serveisList = new ArrayList<>();
         System.out.println();
-        System.out.println("Serveis adicionals: ");
+        System.out.println("Serveis adicionals (0-4):\n ");
+        System.out.println("0. Finalitzar ");
+        System.out.println("1. Esmorçar (10 e) ");
+        System.out.println("2. Gimnàs   (15 e) ");
+        System.out.println("3. Spa      (20 e) ");
+        System.out.println("4. Piscina  (25 e) ");
         do {
-            System.out.println("Vols afegir un servei? (s/n) ");
+
+            System.out.print("\nVol afegir un servei? (s/n): ");
             resposta = sc.nextLine().toLowerCase().charAt(0);
             System.out.println();
+
             if (resposta == 'n') {
                 respostaValida = true;
                 break;
             }
 
             else if (resposta == 's') {
+
                 respostaValida = true;
-                System.out.println("Introdueix número del servei (1-4): ");
-                System.out.println("1. Esmorçar 10 e ");
-                System.out.println("2. Gimnàs 15 e ");
-                System.out.println("3. Spa 20 e ");
-                System.out.println("4. Piscina 25 e ");
+                System.out.print("Seleccione servei: ");
 
                 int opcio = sc.nextInt();
                 sc.nextLine();
@@ -304,6 +323,9 @@ public class App {
                 String serveiTriat = null;
 
                 switch (opcio) {
+                    case 0:
+                        eixir = true;
+                        break;
                     case 1:
                         serviciValid = true;
                         serveiTriat = SERVEI_ESMORZAR;
@@ -325,6 +347,9 @@ public class App {
                         break;
 
                 }
+                if (eixir) {
+                    break;
+                }
 
                 if (serveisList.contains(serveiTriat)) {
                     System.out.println("Ja has seleccionat aquest servei. ");
@@ -343,11 +368,6 @@ public class App {
                     System.out.println();
                 }
 
-                for (int i = 0; i < serveisList.size(); i++) {
-
-                    System.out.println((i + 1) + ". " + serveisList.get(i));
-
-                }
             }
 
             else {
@@ -373,9 +393,9 @@ public class App {
         for (String servei : serveisList) {
             preuTotal += preusServeis.get(servei);
         }
-        System.out.println("Preu total: " + String.format("%.2f", preuTotal) + " euros");
+
         preuTotal = preuTotal * (1 + IVA);
-        System.out.println("Preu total (amb IVA): " + String.format("%.2f", preuTotal) + " euros");
+
         return preuTotal;
     }
 
@@ -393,7 +413,6 @@ public class App {
             codiRepetit = reserves.containsKey(codiReserva);
         } while (codiRepetit);
 
-        System.out.println("Codi de reserva: " + codiReserva);
         return codiReserva;
     }
 
@@ -425,7 +444,8 @@ public class App {
             disponibilitatHabitacions.put(tipusHabitacio, disponible + 1); // añade 1 a la disponibilitat. "X+1"
 
             reserves.remove(codiReserva);
-            System.out.println("Reserva cancel·lada ");
+            System.out.println("Habitació alliberada correctament. ");
+            System.out.println("Disponibilitat actualitzada.");
         }
 
         else {
@@ -438,14 +458,14 @@ public class App {
      */
     public static void consultarDisponibilitat() {
         // TODO: Mostrar lliures i ocupades
-        System.out.println("Disponibilitat de habitacions: ");
+        System.out.println("===== DISPONIBILITAT D'HABITACIONS =====");
 
-        System.out.println("TIPUS\t\tLLIURES\tOCUPADES");
+        System.out.println("\nTIPUS\t\tLLIURES\tOCUPADES");
         System.out.println("------\t\t-------\t--------");
 
         mostrarDisponibilitatTipus(TIPUS_ESTANDARD);
-        mostrarDisponibilitatTipus(TIPUS_DELUXE);
         mostrarDisponibilitatTipus(TIPUS_SUITE);
+        mostrarDisponibilitatTipus(TIPUS_DELUXE);
 
     }
 
@@ -501,8 +521,8 @@ public class App {
             ArrayList<String> dadesReserva = new ArrayList<>();
             int codiReserva = entrada.getKey();
             dadesReserva = entrada.getValue();
-            tipoBuscat=dadesReserva.get(0);
-            if (tipoBuscat.equals(tipoHabitacio)){
+            tipoBuscat = dadesReserva.get(0);
+            if (tipoBuscat.equals(tipoHabitacio)) {
                 mostrarDadesReserva(codiReserva);
                 System.out.println();
             }
